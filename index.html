@@ -1,0 +1,2482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Space Contest Mendo - Concours de Prospection Spatiale</title>
+    
+    <!-- React & Babel pour JSX in-browser -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =====================================================
+           CONSTANTES & VARIABLES CSS
+        ===================================================== */
+        :root {
+            --bg-dark: #0a0e27;
+            --bg-darker: #050812;
+            --bg-card: #151b3d;
+            --bg-card-hover: #1a2149;
+            --border-color: #2a3a6e;
+            --text-primary: #e0e6ff;
+            --text-secondary: #8b93c7;
+            --text-muted: #5a618f;
+            --accent-blue: #4d7cff;
+            --accent-purple: #8b5cf6;
+            --accent-teal: #14b8a6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --glow-blue: rgba(77, 124, 255, 0.3);
+            --glow-purple: rgba(139, 92, 246, 0.3);
+        }
+
+        /* =====================================================
+           RESET & BASE STYLES
+        ===================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fond étoilé animé */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, white, transparent),
+                radial-gradient(2px 2px at 60px 70px, white, transparent),
+                radial-gradient(1px 1px at 50px 50px, white, transparent),
+                radial-gradient(1px 1px at 130px 80px, white, transparent),
+                radial-gradient(2px 2px at 90px 10px, white, transparent);
+            background-size: 200px 200px;
+            opacity: 0.3;
+            z-index: 0;
+            animation: twinkle 200s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-200px, -200px); }
+        }
+
+        #root {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* =====================================================
+           CONTAINER & LAYOUT
+        ===================================================== */
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .app-header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(77, 124, 255, 0.1) 100%);
+            border-radius: 20px;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .app-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-teal));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px var(--glow-blue);
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* =====================================================
+           NAVIGATION TABS
+        ===================================================== */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .nav-tab:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-color: var(--accent-purple);
+            color: white;
+            box-shadow: 0 5px 20px var(--glow-blue);
+        }
+
+        .nav-tab i {
+            margin-right: 8px;
+        }
+
+        /* =====================================================
+           CARDS & SECTIONS
+        ===================================================== */
+        .section {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        /* =====================================================
+           FORMS & INPUTS
+        ===================================================== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 12px 16px;
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px var(--glow-blue);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input[type="color"] {
+            height: 50px;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--accent-warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* =====================================================
+           TABLES
+        ===================================================== */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-darker);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        tr:hover {
+            background: rgba(77, 124, 255, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .table-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* =====================================================
+           LEADERBOARD STYLES
+        ===================================================== */
+        .leaderboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-darker));
+            border: 3px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--team-color, var(--accent-blue)), transparent);
+        }
+
+        .team-rank {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+            box-shadow: 0 5px 15px var(--glow-blue);
+        }
+
+        .team-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .team-emoji {
+            font-size: 3rem;
+        }
+
+        .team-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: var(--bg-darker);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        /* =====================================================
+           ROCKET ANIMATION
+        ===================================================== */
+        .rocket-track-container {
+            margin: 30px 0;
+        }
+
+        .rocket-track {
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .track-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .track-team-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .track-stats {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .planet-line {
+            position: relative;
+            height: 80px;
+            background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .planets-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .planet {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+        }
+
+        .planet-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(77, 124, 255, 0.5));
+        }
+
+        .planet-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .rocket {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            transition: left 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 0 10px currentColor);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--team-color, var(--accent-blue)), var(--accent-purple));
+            border-radius: 4px;
+            transition: width 1s ease;
+            box-shadow: 0 0 10px var(--team-color, var(--accent-blue));
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* =====================================================
+           ALERTS & TOASTS
+        ===================================================== */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--accent-success);
+            color: var(--accent-success);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid var(--accent-warning);
+            color: var(--accent-warning);
+        }
+
+        .alert-info {
+            background: rgba(77, 124, 255, 0.2);
+            border: 2px solid var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .alert-celebration {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(77, 124, 255, 0.3));
+            border: 3px solid var(--accent-purple);
+            color: white;
+            font-size: 1.2rem;
+            padding: 20px;
+            box-shadow: 0 10px 40px var(--glow-purple);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 10px 40px var(--glow-purple);
+            }
+            50% {
+                box-shadow: 0 10px 60px var(--glow-blue);
+            }
+        }
+
+        .alert-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .alert-close:hover {
+            opacity: 1;
+        }
+
+        /* =====================================================
+           BADGES & CHIPS
+        ===================================================== */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            gap: 6px;
+        }
+
+        .badge-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--accent-success);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--accent-warning);
+            color: white;
+        }
+
+        .team-color-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: inline-block;
+        }
+
+        /* =====================================================
+           UTILITY CLASSES
+        ===================================================== */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+        .mb-3 { margin-bottom: 30px; }
+
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mt-3 { margin-top: 30px; }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gap-1 { gap: 10px; }
+        .gap-2 { gap: 20px; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 768px) {
+            .app-title {
+                font-size: 2rem;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-container {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+        /* =====================================================
+           LOADING SPINNER
+        ===================================================== */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+
+        /* =====================================================
+           CHART STYLES (pour l'historique)
+        ===================================================== */
+        .chart-container {
+            background: var(--bg-darker);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            height: 400px;
+            position: relative;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        ╔══════════════════════════════════════════════════════════════════════════════╗
+        ║  🚀 SPACE CONTEST MENDO - APPLICATION DE CONCOURS DE PROSPECTION SPATIALE  ║
+        ╚══════════════════════════════════════════════════════════════════════════════╝
+        
+        📖 INSTRUCTIONS D'UTILISATION :
+        
+        1. OUVRIR CE FICHIER DANS UN NAVIGATEUR
+           - Téléchargez ce fichier sur votre ordinateur
+           - Double-cliquez pour l'ouvrir dans votre navigateur (Chrome, Firefox, Edge, Safari)
+           - Aucune installation supplémentaire n'est nécessaire
+        
+        2. CONFIGURATION INITIALE
+           - Allez dans l'onglet "⚙️ Configuration"
+           - Configurez les paramètres du concours (nom, dates, points)
+           - Créez vos équipes avec leurs couleurs et emojis
+           - Ajoutez vos joueurs dans chaque équipe
+           - Définissez les types de bonus (mini-jeux)
+        
+        3. SAISIE QUOTIDIENNE
+           - Allez dans l'onglet "📊 Saisie du jour"
+           - Sélectionnez la date (par défaut: aujourd'hui)
+           - Entrez les appels, RDV et bonus pour chaque joueur
+           - Cliquez sur "Enregistrer" pour sauvegarder
+           - Attribution de bonus mini-jeux aux équipes
+        
+        4. VISUALISATION EN TEMPS RÉEL
+           - Allez dans l'onglet "🏆 Leaderboard & Fusées"
+           - Projetez cet écran sur un grand moniteur/vidéoprojecteur
+           - Les fusées avancent automatiquement entre les planètes
+           - Célébrez quand une équipe atteint une nouvelle planète !
+        
+        5. SUIVI HISTORIQUE
+           - Allez dans l'onglet "📈 Historique"
+           - Consultez la progression jour par jour
+           - Visualisez les graphiques d'évolution
+        
+        6. SAUVEGARDE & EXPORT
+           - Vos données sont automatiquement sauvegardées dans le navigateur
+           - Utilisez "Exporter les données" pour créer une copie de sauvegarde
+           - Utilisez "Importer les données" pour restaurer une sauvegarde
+        
+        ⚠️ IMPORTANT :
+        - Les données sont stockées dans le navigateur (localStorage)
+        - Exportez régulièrement vos données pour ne pas les perdre
+        - N'effacez pas les données du navigateur pendant le concours
+        - Utilisez toujours le même ordinateur ou transférez via export/import
+        
+        🎯 MODÈLE DE CALCUL DES POINTS :
+        - Points = (Appels × Points par appel) + (RDV × Points par RDV) + Bonus manuels
+        - Progression planètes = Points équipe ÷ Seuil par planète
+        - Nouveau bonus "Bocal à bonus" déclenché à chaque nouvelle planète atteinte
+        
+        💡 ASTUCE :
+        - Configurez tout avant de commencer le concours
+        - Testez avec quelques données fictives
+        - Projetez l'écran "Leaderboard & Fusées" pendant les sessions de phoning
+        - Célébrez chaque succès avec l'équipe !
+        
+        ═══════════════════════════════════════════════════════════════════════════════
+    -->
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // =====================================================
+        // CONSTANTES & CONFIGURATION
+        // =====================================================
+        
+        const STORAGE_KEY = 'spaceContestMendo';
+        
+        const DEFAULT_CONFIG = {
+            id: 'contest-1',
+            name: 'Space Contest Mendo',
+            startDate: '2025-11-17',
+            endDate: '2025-12-18',
+            pointsPerCall: 1,
+            pointsPerMeeting: 10,
+            planetThreshold: 100,
+            totalPlanets: 10,
+            planetNames: ['🟤 Pluton', '🔵 Neptune', '🟢 Uranus', '🪐 Saturne', '🟠 Jupiter', '🔴 Mars', '🌍 Terre', '🟡 Vénus', '⚫ Mercure', '☀️ Soleil'],
+            useConnectedCalls: false
+        };
+
+        const DEFAULT_BONUS_EVENTS = [
+            { id: 'bonus-1', name: 'Saut gravitationnel', description: 'Mini-jeu: Navigation spatiale', defaultPoints: 20 },
+            { id: 'bonus-2', name: 'Rover de recherche', description: 'Mini-jeu: Exploration planétaire', defaultPoints: 20 },
+            { id: 'bonus-3', name: 'Anneaux de Saturne', description: 'Mini-jeu: Précision orbitale', defaultPoints: 20 },
+            { id: 'bonus-4', name: 'Météorites dorées', description: 'Challenge spécial', defaultPoints: 30 }
+        ];
+
+        const TEAM_COLORS = [
+            '#4d7cff', '#8b5cf6', '#14b8a6', '#f59e0b', '#ef4444', '#10b981', '#ec4899', '#6366f1'
+        ];
+
+        const PLANET_EMOJIS = ['🟤', '🔵', '🟢', '🪐', '🟠', '🔴', '🌍', '🟡', '⚫', '☀️'];
+
+        // =====================================================
+        // UTILITAIRES & HELPERS
+        // =====================================================
+
+        // Génération d'ID unique
+        const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+        // Format de date
+        const formatDate = (dateString) => {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        };
+
+        // Sauvegarde dans localStorage
+        const saveState = (state) => {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+                return false;
+            }
+        };
+
+        // Chargement depuis localStorage
+        const loadState = () => {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+            }
+            return null;
+        };
+
+        // Export JSON
+        const exportData = (state) => {
+            const dataStr = JSON.stringify(state, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `space-contest-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        };
+
+        // Import JSON
+        const importData = (file, callback) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    callback(data);
+                } catch (error) {
+                    alert('Erreur lors de l\'import: fichier invalide');
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        // =====================================================
+        // LOGIQUE MÉTIER - CALCULS
+        // =====================================================
+
+        // Calcul des points d'un joueur sur une période
+        const calculatePlayerPoints = (playerId, dailyStats, config) => {
+            const playerStats = dailyStats.filter(stat => stat.playerId === playerId);
+            
+            const callsTotal = playerStats.reduce((sum, stat) => sum + (stat.calls || 0), 0);
+            const meetingsTotal = playerStats.reduce((sum, stat) => sum + (stat.meetings || 0), 0);
+            const bonusPointsTotal = playerStats.reduce((sum, stat) => sum + (stat.manualBonusPoints || 0), 0);
+            
+            const pointsBase = (callsTotal * config.pointsPerCall) + (meetingsTotal * config.pointsPerMeeting);
+            const pointsTotal = pointsBase + bonusPointsTotal;
+            
+            return {
+                callsTotal,
+                meetingsTotal,
+                bonusPointsTotal,
+                pointsBase,
+                pointsTotal
+            };
+        };
+
+        // Calcul des points d'une équipe
+        const calculateTeamPoints = (teamId, players, dailyStats, config) => {
+            const teamPlayers = players.filter(p => p.teamId === teamId);
+            
+            let totalPoints = 0;
+            let totalCalls = 0;
+            let totalMeetings = 0;
+            let totalBonus = 0;
+            
+            teamPlayers.forEach(player => {
+                const playerData = calculatePlayerPoints(player.id, dailyStats, config);
+                totalPoints += playerData.pointsTotal;
+                totalCalls += playerData.callsTotal;
+                totalMeetings += playerData.meetingsTotal;
+                totalBonus += playerData.bonusPointsTotal;
+            });
+            
+            return {
+                totalPoints,
+                totalCalls,
+                totalMeetings,
+                totalBonus,
+                playerCount: teamPlayers.length
+            };
+        };
+
+        // Calcul de la progression planètes
+        const calculatePlanetProgress = (teamPoints, planetThreshold) => {
+            const planetsReached = Math.floor(teamPoints / planetThreshold);
+            const progressToNext = (teamPoints % planetThreshold) / planetThreshold;
+            const progressPercent = Math.round(progressToNext * 100);
+            
+            return {
+                planetsReached,
+                progressToNext,
+                progressPercent
+            };
+        };
+
+        // =====================================================
+        // COMPOSANT PRINCIPAL - APP
+        // =====================================================
+
+        function App() {
+            // État global de l'application
+            const [activeTab, setActiveTab] = useState('leaderboard');
+            const [config, setConfig] = useState(DEFAULT_CONFIG);
+            const [teams, setTeams] = useState([]);
+            const [players, setPlayers] = useState([]);
+            const [dailyStats, setDailyStats] = useState([]);
+            const [bonusEvents, setBonusEvents] = useState(DEFAULT_BONUS_EVENTS);
+            const [celebrationAlerts, setCelebrationAlerts] = useState([]);
+            const [toast, setToast] = useState(null);
+
+            // Chargement initial depuis localStorage
+            useEffect(() => {
+                const savedState = loadState();
+                if (savedState) {
+                    // Vérifier si la config est à jour
+                    const savedConfig = savedState.config || DEFAULT_CONFIG;
+                    
+                    // Mise à jour du parcours spatial (10 planètes)
+                    if (savedConfig.totalPlanets !== 10 || savedConfig.planetNames.length !== 10) {
+                        savedConfig.totalPlanets = DEFAULT_CONFIG.totalPlanets;
+                        savedConfig.planetNames = DEFAULT_CONFIG.planetNames;
+                        console.log('Configuration des planètes mise à jour automatiquement');
+                    }
+                    
+                    // Mise à jour du nom (retirer "j1" ou ancien nom)
+                    if (savedConfig.name !== 'Space Contest Mendo') {
+                        savedConfig.name = 'Space Contest Mendo';
+                        console.log('Nom du concours mis à jour');
+                    }
+                    
+                    // Mise à jour de la date de fin (18 décembre)
+                    if (savedConfig.endDate !== '2025-12-18') {
+                        savedConfig.endDate = '2025-12-18';
+                        console.log('Date de fin mise à jour au 18/12/2025');
+                    }
+                    
+                    // Vérifier et corriger l'emoji Uranus (doit être 🟢)
+                    if (savedConfig.planetNames[2] && !savedConfig.planetNames[2].includes('🟢')) {
+                        savedConfig.planetNames[2] = '🟢 Uranus';
+                        console.log('Emoji Uranus mis à jour');
+                    }
+                    
+                    setConfig(savedConfig);
+                    setTeams(savedState.teams || []);
+                    setPlayers(savedState.players || []);
+                    setDailyStats(savedState.dailyStats || []);
+                    setBonusEvents(savedState.bonusEvents || DEFAULT_BONUS_EVENTS);
+                }
+            }, []);
+
+            // Sauvegarde automatique
+            useEffect(() => {
+                const state = {
+                    config,
+                    teams,
+                    players,
+                    dailyStats,
+                    bonusEvents
+                };
+                saveState(state);
+            }, [config, teams, players, dailyStats, bonusEvents]);
+
+            // Afficher un toast
+            const showToast = (message, type = 'success') => {
+                setToast({ message, type });
+                setTimeout(() => setToast(null), 3000);
+            };
+
+            // Export des données
+            const handleExport = () => {
+                exportData({ config, teams, players, dailyStats, bonusEvents });
+                showToast('Données exportées avec succès ! 🎉');
+            };
+
+            // Import des données
+            const handleImport = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    importData(file, (data) => {
+                        setConfig(data.config || DEFAULT_CONFIG);
+                        setTeams(data.teams || []);
+                        setPlayers(data.players || []);
+                        setDailyStats(data.dailyStats || []);
+                        setBonusEvents(data.bonusEvents || DEFAULT_BONUS_EVENTS);
+                        showToast('Données importées avec succès ! 🚀');
+                    });
+                }
+            };
+
+            return (
+                <div className="app-container">
+                    {/* Header */}
+                    <header className="app-header">
+                        <h1 className="app-title">
+                            <i className="fas fa-rocket"></i> Space Contest Mendo
+                        </h1>
+                        <p className="app-subtitle">
+                            🌌 Concours de Prospection Spatiale
+                        </p>
+                    </header>
+
+                    {/* Toast notifications */}
+                    {toast && (
+                        <div className={`alert alert-${toast.type}`}>
+                            <i className="fas fa-check-circle"></i>
+                            <span>{toast.message}</span>
+                        </div>
+                    )}
+
+                    {/* Navigation */}
+                    <nav className="nav-tabs">
+                        <button 
+                            className={`nav-tab ${activeTab === 'leaderboard' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('leaderboard')}
+                        >
+                            <i className="fas fa-trophy"></i> Leaderboard & Fusées
+                        </button>
+                        <button 
+                            className={`nav-tab ${activeTab === 'saisie' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('saisie')}
+                        >
+                            <i className="fas fa-edit"></i> Saisie du jour
+                        </button>
+                        <button 
+                            className={`nav-tab ${activeTab === 'config' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('config')}
+                        >
+                            <i className="fas fa-cog"></i> Configuration
+                        </button>
+                        <button 
+                            className={`nav-tab ${activeTab === 'historique' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('historique')}
+                        >
+                            <i className="fas fa-chart-line"></i> Historique
+                        </button>
+                    </nav>
+
+                    {/* Contenu principal */}
+                    <main>
+                        {activeTab === 'config' && (
+                            <ConfigurationTab
+                                config={config}
+                                setConfig={setConfig}
+                                teams={teams}
+                                setTeams={setTeams}
+                                players={players}
+                                setPlayers={setPlayers}
+                                bonusEvents={bonusEvents}
+                                setBonusEvents={setBonusEvents}
+                                showToast={showToast}
+                                handleExport={handleExport}
+                                handleImport={handleImport}
+                            />
+                        )}
+
+                        {activeTab === 'saisie' && (
+                            <SaisieTab
+                                config={config}
+                                players={players}
+                                teams={teams}
+                                dailyStats={dailyStats}
+                                setDailyStats={setDailyStats}
+                                bonusEvents={bonusEvents}
+                                showToast={showToast}
+                            />
+                        )}
+
+                        {activeTab === 'leaderboard' && (
+                            <LeaderboardTab
+                                config={config}
+                                teams={teams}
+                                players={players}
+                                dailyStats={dailyStats}
+                                celebrationAlerts={celebrationAlerts}
+                                setCelebrationAlerts={setCelebrationAlerts}
+                            />
+                        )}
+
+                        {activeTab === 'historique' && (
+                            <HistoriqueTab
+                                config={config}
+                                teams={teams}
+                                players={players}
+                                dailyStats={dailyStats}
+                            />
+                        )}
+                    </main>
+                </div>
+            );
+        }
+
+        // =====================================================
+        // ONGLET CONFIGURATION
+        // =====================================================
+
+        function ConfigurationTab({ config, setConfig, teams, setTeams, players, setPlayers, bonusEvents, setBonusEvents, showToast, handleExport, handleImport }) {
+            const [newTeam, setNewTeam] = useState({ name: '', color: TEAM_COLORS[0], logoEmoji: '🚀' });
+            const [newPlayer, setNewPlayer] = useState({ name: '', teamId: '', role: 'SDR' });
+            const [newBonus, setNewBonus] = useState({ name: '', description: '' });
+
+            const handleConfigChange = (field, value) => {
+                setConfig({ ...config, [field]: value });
+            };
+
+            const handleAddTeam = () => {
+                if (!newTeam.name.trim()) {
+                    alert('Veuillez entrer un nom d\'équipe');
+                    return;
+                }
+                const team = {
+                    id: generateId(),
+                    name: newTeam.name.trim(),
+                    color: newTeam.color,
+                    logoEmoji: newTeam.logoEmoji || '🚀'
+                };
+                setTeams([...teams, team]);
+                setNewTeam({ name: '', color: TEAM_COLORS[teams.length % TEAM_COLORS.length], logoEmoji: '🚀' });
+                showToast(`Équipe "${team.name}" créée ! 🎉`);
+            };
+
+            const handleDeleteTeam = (teamId) => {
+                if (confirm('Supprimer cette équipe et tous ses joueurs ?')) {
+                    setTeams(teams.filter(t => t.id !== teamId));
+                    setPlayers(players.filter(p => p.teamId !== teamId));
+                    showToast('Équipe supprimée');
+                }
+            };
+
+            const handleAddPlayer = () => {
+                if (!newPlayer.name.trim() || !newPlayer.teamId) {
+                    alert('Veuillez remplir tous les champs');
+                    return;
+                }
+                const player = {
+                    id: generateId(),
+                    name: newPlayer.name.trim(),
+                    teamId: newPlayer.teamId,
+                    role: newPlayer.role.trim() || 'SDR'
+                };
+                setPlayers([...players, player]);
+                setNewPlayer({ name: '', teamId: newPlayer.teamId, role: 'SDR' });
+                showToast(`Joueur "${player.name}" ajouté ! 👤`);
+            };
+
+            const handleDeletePlayer = (playerId) => {
+                if (confirm('Supprimer ce joueur ?')) {
+                    setPlayers(players.filter(p => p.id !== playerId));
+                    showToast('Joueur supprimé');
+                }
+            };
+
+            const handleAddBonus = () => {
+                if (!newBonus.name.trim()) {
+                    alert('Veuillez entrer un nom de mini-jeu');
+                    return;
+                }
+                const bonus = {
+                    id: generateId(),
+                    name: newBonus.name.trim(),
+                    description: newBonus.description.trim(),
+                    defaultPoints: 20
+                };
+                setBonusEvents([...bonusEvents, bonus]);
+                setNewBonus({ name: '', description: '' });
+                showToast(`Mini-jeu "${bonus.name}" créé ! 🎮`);
+            };
+
+            const handleDeleteBonus = (bonusId) => {
+                if (confirm('Supprimer ce mini-jeu ?')) {
+                    setBonusEvents(bonusEvents.filter(b => b.id !== bonusId));
+                    showToast('Mini-jeu supprimé');
+                }
+            };
+
+            return (
+                <div>
+                    {/* Paramètres du concours */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-sliders-h"></i> Paramètres du concours
+                        </h2>
+                        
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label className="form-label">Nom du concours</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={config.name}
+                                    onChange={(e) => handleConfigChange('name', e.target.value)}
+                                    placeholder="Space Contest Mendo – Q1 2026"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Date de début</label>
+                                <input
+                                    type="date"
+                                    className="form-input"
+                                    value={config.startDate}
+                                    onChange={(e) => handleConfigChange('startDate', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Date de fin</label>
+                                <input
+                                    type="date"
+                                    className="form-input"
+                                    value={config.endDate}
+                                    onChange={(e) => handleConfigChange('endDate', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Points par appel</label>
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    value={config.pointsPerCall}
+                                    onChange={(e) => handleConfigChange('pointsPerCall', parseInt(e.target.value) || 0)}
+                                    min="0"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Points par RDV</label>
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    value={config.pointsPerMeeting}
+                                    onChange={(e) => handleConfigChange('pointsPerMeeting', parseInt(e.target.value) || 0)}
+                                    min="0"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Seuil par planète</label>
+                                <input
+                                    type="number"
+                                    className="form-input"
+                                    value={config.planetThreshold}
+                                    onChange={(e) => handleConfigChange('planetThreshold', parseInt(e.target.value) || 100)}
+                                    min="1"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="alert alert-info mt-2">
+                            <i className="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Résumé:</strong> 1 appel = {config.pointsPerCall} point{config.pointsPerCall > 1 ? 's' : ''} • 
+                                1 RDV = {config.pointsPerMeeting} points • 
+                                1 planète tous les {config.planetThreshold} points • 
+                                Parcours : {config.totalPlanets} étapes ({config.planetNames.join(' → ')})
+                            </div>
+                        </div>
+
+                        <div className="mt-2">
+                            <button 
+                                className="btn btn-warning"
+                                onClick={() => {
+                                    if (confirm('Réinitialiser la configuration des planètes ?\n\nCela va restaurer le parcours spatial par défaut (10 étapes : Pluton → Neptune → Uranus → Saturne → Jupiter → Mars → Terre → Vénus → Mercure → Soleil)')) {
+                                        setConfig({
+                                            ...config,
+                                            totalPlanets: DEFAULT_CONFIG.totalPlanets,
+                                            planetNames: DEFAULT_CONFIG.planetNames
+                                        });
+                                        showToast('Configuration des planètes réinitialisée ! 🪐');
+                                    }
+                                }}
+                            >
+                                <i className="fas fa-sync-alt"></i> Réinitialiser les planètes (Pluton → Soleil)
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* Gestion des équipes */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-users"></i> Équipes ({teams.length})
+                        </h2>
+
+                        <div className="form-grid mb-2">
+                            <div className="form-group">
+                                <label className="form-label">Nom de l'équipe</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={newTeam.name}
+                                    onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
+                                    placeholder="Équipe Orion"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Couleur</label>
+                                <input
+                                    type="color"
+                                    className="form-input"
+                                    value={newTeam.color}
+                                    onChange={(e) => setNewTeam({ ...newTeam, color: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Emoji/Logo</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={newTeam.logoEmoji}
+                                    onChange={(e) => setNewTeam({ ...newTeam, logoEmoji: e.target.value })}
+                                    placeholder="🚀"
+                                    maxLength="2"
+                                />
+                            </div>
+
+                            <div className="form-group" style={{display: 'flex', alignItems: 'flex-end'}}>
+                                <button className="btn btn-primary btn-block" onClick={handleAddTeam}>
+                                    <i className="fas fa-plus"></i> Ajouter l'équipe
+                                </button>
+                            </div>
+                        </div>
+
+                        {teams.length === 0 ? (
+                            <div className="empty-state">
+                                <i className="fas fa-users"></i>
+                                <h3>Aucune équipe créée</h3>
+                                <p>Commencez par créer votre première équipe ci-dessus</p>
+                            </div>
+                        ) : (
+                            <div className="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Équipe</th>
+                                            <th>Couleur</th>
+                                            <th>Joueurs</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {teams.map(team => (
+                                            <tr key={team.id}>
+                                                <td>
+                                                    <span style={{fontSize: '1.5rem', marginRight: '10px'}}>
+                                                        {team.logoEmoji}
+                                                    </span>
+                                                    {team.name}
+                                                </td>
+                                                <td>
+                                                    <span 
+                                                        className="team-color-badge" 
+                                                        style={{backgroundColor: team.color}}
+                                                    ></span>
+                                                    {team.color}
+                                                </td>
+                                                <td>
+                                                    {players.filter(p => p.teamId === team.id).length} joueur(s)
+                                                </td>
+                                                <td>
+                                                    <button 
+                                                        className="btn btn-danger btn-small"
+                                                        onClick={() => handleDeleteTeam(team.id)}
+                                                    >
+                                                        <i className="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* Gestion des joueurs */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-user"></i> Joueurs ({players.length})
+                        </h2>
+
+                        {teams.length === 0 ? (
+                            <div className="alert alert-warning">
+                                <i className="fas fa-exclamation-triangle"></i>
+                                <span>Créez au moins une équipe avant d'ajouter des joueurs</span>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="form-grid mb-2">
+                                    <div className="form-group">
+                                        <label className="form-label">Nom du joueur</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            value={newPlayer.name}
+                                            onChange={(e) => setNewPlayer({ ...newPlayer, name: e.target.value })}
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label">Équipe</label>
+                                        <select
+                                            className="form-select"
+                                            value={newPlayer.teamId}
+                                            onChange={(e) => setNewPlayer({ ...newPlayer, teamId: e.target.value })}
+                                        >
+                                            <option value="">Sélectionner une équipe</option>
+                                            {teams.map(team => (
+                                                <option key={team.id} value={team.id}>
+                                                    {team.logoEmoji} {team.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label className="form-label">Rôle</label>
+                                        <input
+                                            type="text"
+                                            className="form-input"
+                                            value={newPlayer.role}
+                                            onChange={(e) => setNewPlayer({ ...newPlayer, role: e.target.value })}
+                                            placeholder="SDR, AE, Pilote..."
+                                        />
+                                    </div>
+
+                                    <div className="form-group" style={{display: 'flex', alignItems: 'flex-end'}}>
+                                        <button className="btn btn-primary btn-block" onClick={handleAddPlayer}>
+                                            <i className="fas fa-plus"></i> Ajouter le joueur
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {players.length === 0 ? (
+                                    <div className="empty-state">
+                                        <i className="fas fa-user"></i>
+                                        <h3>Aucun joueur ajouté</h3>
+                                        <p>Ajoutez vos premiers joueurs ci-dessus</p>
+                                    </div>
+                                ) : (
+                                    <div className="table-container">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Joueur</th>
+                                                    <th>Équipe</th>
+                                                    <th>Rôle</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {players.map(player => {
+                                                    const team = teams.find(t => t.id === player.teamId);
+                                                    return (
+                                                        <tr key={player.id}>
+                                                            <td>{player.name}</td>
+                                                            <td>
+                                                                {team ? (
+                                                                    <>
+                                                                        <span style={{fontSize: '1.2rem', marginRight: '8px'}}>
+                                                                            {team.logoEmoji}
+                                                                        </span>
+                                                                        {team.name}
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="text-muted">Équipe supprimée</span>
+                                                                )}
+                                                            </td>
+                                                            <td>{player.role}</td>
+                                                            <td>
+                                                                <button 
+                                                                    className="btn btn-danger btn-small"
+                                                                    onClick={() => handleDeletePlayer(player.id)}
+                                                                >
+                                                                    <i className="fas fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </section>
+
+                    {/* Gestion des bonus */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-gamepad"></i> Mini-jeux ({bonusEvents.length})
+                        </h2>
+
+                        <div className="form-grid mb-2">
+                            <div className="form-group">
+                                <label className="form-label">Nom du mini-jeu</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={newBonus.name}
+                                    onChange={(e) => setNewBonus({ ...newBonus, name: e.target.value })}
+                                    placeholder="Saut gravitationnel"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Description</label>
+                                <input
+                                    type="text"
+                                    className="form-input"
+                                    value={newBonus.description}
+                                    onChange={(e) => setNewBonus({ ...newBonus, description: e.target.value })}
+                                    placeholder="Mini-jeu: Navigation spatiale"
+                                />
+                            </div>
+
+                            <div className="form-group" style={{display: 'flex', alignItems: 'flex-end'}}>
+                                <button className="btn btn-primary btn-block" onClick={handleAddBonus}>
+                                    <i className="fas fa-plus"></i> Ajouter le mini-jeu
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nom du mini-jeu</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {bonusEvents.map(bonus => (
+                                        <tr key={bonus.id}>
+                                            <td><strong>{bonus.name}</strong></td>
+                                            <td>{bonus.description}</td>
+                                            <td>
+                                                <button 
+                                                    className="btn btn-danger btn-small"
+                                                    onClick={() => handleDeleteBonus(bonus.id)}
+                                                >
+                                                    <i className="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    {/* Export / Import */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-save"></i> Sauvegarde & Restauration
+                        </h2>
+
+                        <p className="text-muted mb-2">
+                            Les données sont automatiquement sauvegardées dans votre navigateur. 
+                            Exportez régulièrement pour créer des copies de sauvegarde.
+                        </p>
+
+                        <div className="btn-group">
+                            <button className="btn btn-success" onClick={handleExport}>
+                                <i className="fas fa-download"></i> Exporter les données (JSON)
+                            </button>
+                            
+                            <label className="btn btn-warning" style={{cursor: 'pointer'}}>
+                                <i className="fas fa-upload"></i> Importer les données (JSON)
+                                <input
+                                    type="file"
+                                    accept=".json"
+                                    onChange={handleImport}
+                                    style={{display: 'none'}}
+                                />
+                            </label>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+
+        // =====================================================
+        // ONGLET SAISIE DU JOUR
+        // =====================================================
+
+        function SaisieTab({ config, players, teams, dailyStats, setDailyStats, bonusEvents, showToast }) {
+            const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+            const [dayData, setDayData] = useState({});
+
+            // Charger les données du jour sélectionné
+            useEffect(() => {
+                const statsForDay = dailyStats.filter(stat => stat.date === selectedDate);
+                const dataMap = {};
+                statsForDay.forEach(stat => {
+                    dataMap[stat.playerId] = stat;
+                });
+                setDayData(dataMap);
+            }, [selectedDate, dailyStats]);
+
+            const handleDataChange = (playerId, field, value) => {
+                setDayData(prev => ({
+                    ...prev,
+                    [playerId]: {
+                        ...(prev[playerId] || {}),
+                        playerId,
+                        date: selectedDate,
+                        [field]: parseInt(value) || 0
+                    }
+                }));
+            };
+
+            const calculateDayPoints = (playerId) => {
+                const data = dayData[playerId];
+                if (!data) return 0;
+                
+                const calls = data.calls || 0;
+                const meetings = data.meetings || 0;
+                const bonus = data.manualBonusPoints || 0;
+                
+                return (calls * config.pointsPerCall) + (meetings * config.pointsPerMeeting) + bonus;
+            };
+
+            const handleSaveDay = () => {
+                // Supprimer les anciennes stats de ce jour
+                const otherDayStats = dailyStats.filter(stat => stat.date !== selectedDate);
+                
+                // Créer les nouvelles stats
+                const newStats = Object.values(dayData).map(data => ({
+                    id: generateId(),
+                    playerId: data.playerId,
+                    date: selectedDate,
+                    calls: data.calls || 0,
+                    connectedCalls: data.connectedCalls || 0,
+                    meetings: data.meetings || 0,
+                    manualBonusPoints: data.manualBonusPoints || 0
+                }));
+                
+                setDailyStats([...otherDayStats, ...newStats]);
+                showToast(`Données du ${formatDate(selectedDate)} sauvegardées ! ✅`);
+            };
+
+
+
+            if (players.length === 0) {
+                return (
+                    <div className="section">
+                        <div className="empty-state">
+                            <i className="fas fa-users"></i>
+                            <h3>Aucun joueur configuré</h3>
+                            <p>Allez dans l'onglet Configuration pour créer des équipes et ajouter des joueurs</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    {/* Sélection de la date */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-calendar"></i> Saisie des résultats
+                        </h2>
+
+                        <div className="form-group mb-2" style={{maxWidth: '300px'}}>
+                            <label className="form-label">Date de saisie</label>
+                            <input
+                                type="date"
+                                className="form-input"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="alert alert-info">
+                            <i className="fas fa-info-circle"></i>
+                            <span>
+                                Saisie pour le <strong>{formatDate(selectedDate)}</strong>. 
+                                Modifiez les valeurs puis cliquez sur "Enregistrer la journée".
+                            </span>
+                        </div>
+                    </section>
+
+                    {/* Tableau de saisie */}
+                    <section className="section">
+                        <h3 className="section-subtitle">
+                            📋 Tableau de saisie rapide
+                        </h3>
+
+                        <div className="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Joueur</th>
+                                        <th>Équipe</th>
+                                        <th>Appels</th>
+                                        <th>RDV</th>
+                                        <th>Bonus manuels</th>
+                                        <th>Points du jour</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {players.map(player => {
+                                        const team = teams.find(t => t.id === player.teamId);
+                                        const data = dayData[player.id] || {};
+                                        const dayPoints = calculateDayPoints(player.id);
+                                        
+                                        return (
+                                            <tr key={player.id}>
+                                                <td><strong>{player.name}</strong></td>
+                                                <td>
+                                                    {team && (
+                                                        <>
+                                                            <span style={{fontSize: '1.2rem', marginRight: '8px'}}>
+                                                                {team.logoEmoji}
+                                                            </span>
+                                                            {team.name}
+                                                        </>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="table-input"
+                                                        value={data.calls || 0}
+                                                        onChange={(e) => handleDataChange(player.id, 'calls', e.target.value)}
+                                                        min="0"
+                                                        style={{width: '80px'}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="table-input"
+                                                        value={data.meetings || 0}
+                                                        onChange={(e) => handleDataChange(player.id, 'meetings', e.target.value)}
+                                                        min="0"
+                                                        style={{width: '80px'}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="table-input"
+                                                        value={data.manualBonusPoints || 0}
+                                                        onChange={(e) => handleDataChange(player.id, 'manualBonusPoints', e.target.value)}
+                                                        min="0"
+                                                        style={{width: '80px'}}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <span className="badge badge-primary" style={{fontSize: '1rem'}}>
+                                                        {dayPoints} pts
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="mt-2">
+                            <button className="btn btn-success btn-block" onClick={handleSaveDay}>
+                                <i className="fas fa-save"></i> Enregistrer la journée du {formatDate(selectedDate)}
+                            </button>
+                        </div>
+                    </section>
+
+
+                </div>
+            );
+        }
+
+        // =====================================================
+        // ONGLET LEADERBOARD & FUSÉES
+        // =====================================================
+
+        function LeaderboardTab({ config, teams, players, dailyStats, celebrationAlerts, setCelebrationAlerts }) {
+            const [filterTeam, setFilterTeam] = useState('');
+
+            // Calcul des classements
+            const teamLeaderboard = useMemo(() => {
+                return teams.map(team => {
+                    const teamData = calculateTeamPoints(team.id, players, dailyStats, config);
+                    const planetData = calculatePlanetProgress(teamData.totalPoints, config.planetThreshold);
+                    
+                    return {
+                        ...team,
+                        ...teamData,
+                        ...planetData
+                    };
+                }).sort((a, b) => b.totalPoints - a.totalPoints);
+            }, [teams, players, dailyStats, config]);
+
+            const playerLeaderboard = useMemo(() => {
+                return players
+                    .filter(player => !filterTeam || player.teamId === filterTeam)
+                    .map(player => {
+                        const team = teams.find(t => t.id === player.teamId);
+                        const playerData = calculatePlayerPoints(player.id, dailyStats, config);
+                        
+                        return {
+                            ...player,
+                            team,
+                            ...playerData
+                        };
+                    })
+                    .sort((a, b) => b.pointsTotal - a.pointsTotal);
+            }, [players, teams, dailyStats, config, filterTeam]);
+
+            if (teams.length === 0 || players.length === 0) {
+                return (
+                    <div className="section">
+                        <div className="empty-state">
+                            <i className="fas fa-rocket"></i>
+                            <h3>Configuration incomplète</h3>
+                            <p>Créez des équipes et ajoutez des joueurs dans l'onglet Configuration pour commencer</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    {/* Header avec règles */}
+                    <section className="section">
+                        <div className="text-center">
+                            <h2 style={{fontSize: '2.5rem', marginBottom: '15px'}}>
+                                🚀 {config.name}
+                            </h2>
+                            <p style={{fontSize: '1.2rem', color: 'var(--text-secondary)', marginBottom: '15px'}}>
+                                📅 {formatDate(config.startDate)} - {formatDate(config.endDate)}
+                            </p>
+                            <div className="alert alert-info" style={{maxWidth: '800px', margin: '0 auto'}}>
+                                <i className="fas fa-info-circle"></i>
+                                <div>
+                                    <strong>Règles:</strong> {config.pointsPerCall} pt par appel • 
+                                    {config.pointsPerMeeting} pts par RDV • 
+                                    {config.planetThreshold} pts par planète
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Animation des fusées */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-space-shuttle"></i> Course spatiale
+                        </h2>
+
+                        <div className="rocket-track-container">
+                            {teamLeaderboard.map((team, index) => (
+                                <div key={team.id} className="rocket-track">
+                                    <div className="track-header">
+                                        <div className="track-team-name">
+                                            <span style={{fontSize: '2rem'}}>{team.logoEmoji}</span>
+                                            <span>{team.name}</span>
+                                            <span className="badge badge-primary">#{index + 1}</span>
+                                        </div>
+                                        <div className="track-stats">
+                                            {team.totalPoints} points • 
+                                            {team.planetsReached}/{config.totalPlanets} planètes
+                                        </div>
+                                    </div>
+
+                                    <div className="planet-line">
+                                        <div className="planets-container">
+                                            {config.planetNames.slice(0, config.totalPlanets).map((planetName, i) => (
+                                                <div key={i} className="planet">
+                                                    <div className="planet-icon">
+                                                        {PLANET_EMOJIS[i] || '🪐'}
+                                                    </div>
+                                                    <div className="planet-name">{planetName}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div 
+                                            className="rocket"
+                                            style={{
+                                                left: `${(team.planetsReached / (config.totalPlanets - 1)) * 100}%`,
+                                                color: team.color
+                                            }}
+                                        >
+                                            🚀
+                                        </div>
+                                    </div>
+
+                                    <div className="progress-bar">
+                                        <div 
+                                            className="progress-fill"
+                                            style={{
+                                                width: `${team.progressPercent}%`,
+                                                '--team-color': team.color
+                                            }}
+                                        ></div>
+                                    </div>
+                                    <div className="progress-text">
+                                        {team.progressPercent}% vers la planète suivante
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Leaderboard équipes */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-trophy"></i> Classement des équipes
+                        </h2>
+
+                        <div className="leaderboard-grid">
+                            {teamLeaderboard.map((team, index) => (
+                                <div 
+                                    key={team.id} 
+                                    className="team-card"
+                                    style={{'--team-color': team.color}}
+                                >
+                                    <div className="team-rank">#{index + 1}</div>
+                                    
+                                    <div className="team-header">
+                                        <div className="team-emoji">{team.logoEmoji}</div>
+                                        <div className="team-info">
+                                            <h3>{team.name}</h3>
+                                            <div style={{color: team.color, fontWeight: 600}}>
+                                                {team.totalPoints} points
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="team-stats">
+                                        <div className="stat-item">
+                                            <div className="stat-label">Appels</div>
+                                            <div className="stat-value">{team.totalCalls}</div>
+                                        </div>
+                                        <div className="stat-item">
+                                            <div className="stat-label">RDV</div>
+                                            <div className="stat-value">{team.totalMeetings}</div>
+                                        </div>
+                                        <div className="stat-item">
+                                            <div className="stat-label">Planètes</div>
+                                            <div className="stat-value">
+                                                {team.planetsReached}/{config.totalPlanets}
+                                            </div>
+                                        </div>
+                                        <div className="stat-item">
+                                            <div className="stat-label">Joueurs</div>
+                                            <div className="stat-value">{team.playerCount}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Leaderboard individuel */}
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-user-astronaut"></i> Classement individuel
+                        </h2>
+
+                        <div className="form-group mb-2" style={{maxWidth: '300px'}}>
+                            <label className="form-label">Filtrer par équipe</label>
+                            <select
+                                className="form-select"
+                                value={filterTeam}
+                                onChange={(e) => setFilterTeam(e.target.value)}
+                            >
+                                <option value="">Toutes les équipes</option>
+                                {teams.map(team => (
+                                    <option key={team.id} value={team.id}>
+                                        {team.logoEmoji} {team.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Rang</th>
+                                        <th>Joueur</th>
+                                        <th>Équipe</th>
+                                        <th>Appels</th>
+                                        <th>RDV</th>
+                                        <th>Points totaux</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {playerLeaderboard.map((player, index) => (
+                                        <tr key={player.id}>
+                                            <td>
+                                                <strong style={{fontSize: '1.2rem'}}>#{index + 1}</strong>
+                                            </td>
+                                            <td><strong>{player.name}</strong></td>
+                                            <td>
+                                                {player.team && (
+                                                    <>
+                                                        <span style={{fontSize: '1.2rem', marginRight: '8px'}}>
+                                                            {player.team.logoEmoji}
+                                                        </span>
+                                                        {player.team.name}
+                                                    </>
+                                                )}
+                                            </td>
+                                            <td>{player.callsTotal}</td>
+                                            <td>{player.meetingsTotal}</td>
+                                            <td>
+                                                <strong style={{
+                                                    fontSize: '1.3rem',
+                                                    color: 'var(--accent-blue)'
+                                                }}>
+                                                    {player.pointsTotal} pts
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+
+        // =====================================================
+        // ONGLET HISTORIQUE
+        // =====================================================
+
+        function HistoriqueTab({ config, teams, players, dailyStats }) {
+            const [selectedTeam, setSelectedTeam] = useState('');
+
+            // Calcul de l'historique par date
+            const historyData = useMemo(() => {
+                if (!selectedTeam) return [];
+
+                const teamPlayers = players.filter(p => p.teamId === selectedTeam);
+                const dates = [...new Set(dailyStats.map(s => s.date))].sort();
+
+                let cumulativePoints = 0;
+                
+                return dates.map(date => {
+                    const dayStats = dailyStats.filter(s => s.date === date);
+                    
+                    let dayCalls = 0;
+                    let dayMeetings = 0;
+                    let dayBonus = 0;
+                    let dayPoints = 0;
+
+                    teamPlayers.forEach(player => {
+                        const playerDayStats = dayStats.filter(s => s.playerId === player.id);
+                        playerDayStats.forEach(stat => {
+                            dayCalls += stat.calls || 0;
+                            dayMeetings += stat.meetings || 0;
+                            dayBonus += stat.manualBonusPoints || 0;
+                            
+                            const points = (stat.calls || 0) * config.pointsPerCall + 
+                                         (stat.meetings || 0) * config.pointsPerMeeting + 
+                                         (stat.manualBonusPoints || 0);
+                            dayPoints += points;
+                        });
+                    });
+
+                    cumulativePoints += dayPoints;
+
+                    return {
+                        date,
+                        dayCalls,
+                        dayMeetings,
+                        dayBonus,
+                        dayPoints,
+                        cumulativePoints
+                    };
+                });
+            }, [selectedTeam, players, dailyStats, config]);
+
+            if (teams.length === 0) {
+                return (
+                    <div className="section">
+                        <div className="empty-state">
+                            <i className="fas fa-chart-line"></i>
+                            <h3>Aucune équipe créée</h3>
+                            <p>Créez des équipes dans l'onglet Configuration</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div>
+                    <section className="section">
+                        <h2 className="section-title">
+                            <i className="fas fa-history"></i> Historique de progression
+                        </h2>
+
+                        <div className="form-group mb-2" style={{maxWidth: '400px'}}>
+                            <label className="form-label">Sélectionner une équipe</label>
+                            <select
+                                className="form-select"
+                                value={selectedTeam}
+                                onChange={(e) => setSelectedTeam(e.target.value)}
+                            >
+                                <option value="">Choisir une équipe...</option>
+                                {teams.map(team => (
+                                    <option key={team.id} value={team.id}>
+                                        {team.logoEmoji} {team.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {!selectedTeam ? (
+                            <div className="empty-state">
+                                <i className="fas fa-arrow-up"></i>
+                                <h3>Sélectionnez une équipe</h3>
+                                <p>Choisissez une équipe pour voir son historique détaillé</p>
+                            </div>
+                        ) : historyData.length === 0 ? (
+                            <div className="empty-state">
+                                <i className="fas fa-calendar-times"></i>
+                                <h3>Aucune donnée</h3>
+                                <p>Cette équipe n'a pas encore de données enregistrées</p>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Appels</th>
+                                                <th>RDV</th>
+                                                <th>Bonus</th>
+                                                <th>Points du jour</th>
+                                                <th>Points cumulés</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {historyData.map(day => (
+                                                <tr key={day.date}>
+                                                    <td><strong>{formatDate(day.date)}</strong></td>
+                                                    <td>{day.dayCalls}</td>
+                                                    <td>{day.dayMeetings}</td>
+                                                    <td>
+                                                        {day.dayBonus > 0 && (
+                                                            <span className="badge badge-warning">
+                                                                +{day.dayBonus}
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        <span className="badge badge-primary">
+                                                            {day.dayPoints} pts
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <strong style={{color: 'var(--accent-blue)', fontSize: '1.1rem'}}>
+                                                            {day.cumulativePoints} pts
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Graphique simple avec Canvas */}
+                                <div className="chart-container mt-3">
+                                    <SimpleChart data={historyData} />
+                                </div>
+                            </>
+                        )}
+                    </section>
+                </div>
+            );
+        }
+
+        // =====================================================
+        // COMPOSANT GRAPHIQUE SIMPLE
+        // =====================================================
+
+        function SimpleChart({ data }) {
+            const canvasRef = React.useRef(null);
+
+            useEffect(() => {
+                if (!canvasRef.current || data.length === 0) return;
+
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+
+                // Style
+                ctx.strokeStyle = '#4d7cff';
+                ctx.fillStyle = 'rgba(77, 124, 255, 0.1)';
+                ctx.lineWidth = 3;
+
+                // Marges
+                const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                // Échelle
+                const maxPoints = Math.max(...data.map(d => d.cumulativePoints));
+                const scaleY = chartHeight / maxPoints;
+                const scaleX = chartWidth / (data.length - 1 || 1);
+
+                // Grille
+                ctx.strokeStyle = '#2a3a6e';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+
+                for (let i = 0; i <= 5; i++) {
+                    const y = margin.top + (chartHeight / 5) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin.left, y);
+                    ctx.lineTo(margin.left + chartWidth, y);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+
+                // Labels Y
+                ctx.fillStyle = '#8b93c7';
+                ctx.font = '12px Inter';
+                ctx.textAlign = 'right';
+                for (let i = 0; i <= 5; i++) {
+                    const value = Math.round((maxPoints / 5) * (5 - i));
+                    const y = margin.top + (chartHeight / 5) * i;
+                    ctx.fillText(value + ' pts', margin.left - 10, y + 4);
+                }
+
+                // Tracer la courbe
+                ctx.strokeStyle = '#4d7cff';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                data.forEach((point, i) => {
+                    const x = margin.left + i * scaleX;
+                    const y = margin.top + chartHeight - (point.cumulativePoints * scaleY);
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+
+                // Remplissage sous la courbe
+                ctx.lineTo(margin.left + chartWidth, margin.top + chartHeight);
+                ctx.lineTo(margin.left, margin.top + chartHeight);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(77, 124, 255, 0.1)';
+                ctx.fill();
+
+                // Points
+                ctx.fillStyle = '#4d7cff';
+                data.forEach((point, i) => {
+                    const x = margin.left + i * scaleX;
+                    const y = margin.top + chartHeight - (point.cumulativePoints * scaleY);
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Labels X (dates)
+                ctx.fillStyle = '#8b93c7';
+                ctx.font = '11px Inter';
+                ctx.textAlign = 'center';
+                ctx.save();
+                data.forEach((point, i) => {
+                    if (i % Math.ceil(data.length / 8) === 0 || i === data.length - 1) {
+                        const x = margin.left + i * scaleX;
+                        const y = margin.top + chartHeight + 20;
+                        const date = new Date(point.date);
+                        const label = `${date.getDate()}/${date.getMonth() + 1}`;
+                        ctx.fillText(label, x, y);
+                    }
+                });
+                ctx.restore();
+
+                // Titre
+                ctx.fillStyle = '#e0e6ff';
+                ctx.font = 'bold 16px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Évolution des points cumulés', width / 2, 20);
+
+            }, [data]);
+
+            return (
+                <canvas
+                    ref={canvasRef}
+                    width={1000}
+                    height={400}
+                    style={{width: '100%', height: 'auto'}}
+                />
+            );
+        }
+
+        // =====================================================
+        // RENDU DE L'APPLICATION
+        // =====================================================
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
